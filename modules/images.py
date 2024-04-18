@@ -715,6 +715,13 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
     script_callbacks.image_saved_callback(params)
 
+    # --------------- IMAGE SAVED ---------------
+    try:
+        on_image_save(fullfn)
+    except Exception as e:
+        print(e)
+    # -------------------------------------------
+
     return fullfn, txt_fullfn
 
 
@@ -797,3 +804,10 @@ def flatten(img, bgcolor):
 
     return img.convert('RGB')
 
+def on_image_save(filename):
+    from pathlib import Path
+    basedir = Path(os.getcwd())
+    filename = Path(filename)
+    complete_path = (basedir / filename).as_posix()
+    print(f"Generated image at full path : {complete_path}")
+    print(f"Local path : {filename.as_posix()}")

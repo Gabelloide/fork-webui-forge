@@ -375,6 +375,9 @@ def create_ui():
 
             hr_resolution_preview_inputs = [enable_hr, width, height, hr_scale, hr_resize_x, hr_resize_y]
 
+            sampler_name.change(fn=(lambda x: gr.update(value=1) if ('LCM' in x) else gr.update(value=7) ), inputs=[sampler_name], outputs=[cfg_scale]) # Update CFG scale for LCM samplers
+            sampler_name.change(fn=(lambda x: gr.update(value=10) if ('LCM' in x) else gr.update(value=20) ), inputs=[sampler_name], outputs=[steps]) # Update Sampling Steps for LCM samplers
+
             for component in hr_resolution_preview_inputs:
                 event = component.release if isinstance(component, gr.Slider) else component.change
 
@@ -722,6 +725,9 @@ def create_ui():
 
                     if category not in {"accordions"}:
                         scripts.scripts_img2img.setup_ui_for_section(category)
+
+            sampler_name.change(fn=(lambda x: gr.update(value=1) if ('LCM' in x) else gr.update(value=7) ), inputs=[sampler_name], outputs=[cfg_scale]) # Update CFG scale for LCM samplers
+            sampler_name.change(fn=(lambda x: gr.update(value=10) if ('LCM' in x) else gr.update(value=20) ), inputs=[sampler_name], outputs=[steps]) # Update Sampling Steps for LCM samplers
 
             # the code below is meant to update the resolution label after the image in the image selection UI has changed.
             # as it is now the event keeps firing continuously for inpaint edits, which ruins the page with constant requests.

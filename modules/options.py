@@ -104,8 +104,8 @@ class Options:
 
                 # Restrict component arguments
                 comp_args = info.component_args if info else None
-                if isinstance(comp_args, dict) and comp_args.get('visible', True) is False:
-                    raise RuntimeError(f"not possible to set '{key}' because it is restricted")
+                # if isinstance(comp_args, dict) and comp_args.get('visible', True) is False:
+                #     raise RuntimeError(f"not possible to set '{key}' because it is restricted")
 
                 # Check that this section isn't frozen
                 if cmd_opts.freeze_settings_in_sections is not None:

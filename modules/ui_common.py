@@ -8,6 +8,7 @@ import sys
 
 import gradio as gr
 import subprocess as sp
+from pathlib import Path
 
 from modules import call_queue, shared, ui_tempdir
 from modules.infotext_utils import image_from_url_text
@@ -63,7 +64,17 @@ def update_logfile(logfile_path, fields):
         writer.writerows(rows)
 
 
-def save_files(js_data, images, do_make_zip, index):
+def save_files(js_data, images, do_make_zip, index, req:gr.Request):
+    pseudo = req.username
+
+    if shared.cmd_opts.multiUser: # Only if multiUser mode
+        # SAVE
+        last = Path(shared.opts.outdir_save).parts[-1]
+        shared.opts.outdir_save = Path(shared.opts.outdir_save).parent.parent # Cutting last two parts
+        shared.opts.outdir_save /= Path(pseudo) # Adding new username
+        shared.opts.outdir_save /= last # Adding last folder
+        shared.opts.outdir_save = str(shared.opts.outdir_save)
+    
     filenames = []
     fullfns = []
     parsed_infotexts = []

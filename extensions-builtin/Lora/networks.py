@@ -7,6 +7,7 @@ import network
 
 import torch
 from typing import Union
+from pathlib import Path
 
 from modules import shared, sd_models, errors, scripts
 from ldm_patched.modules.utils import load_torch_file
@@ -149,7 +150,17 @@ def list_available_networks():
 
     os.makedirs(shared.cmd_opts.lora_dir, exist_ok=True)
 
-    candidates = list(shared.walk_files(shared.cmd_opts.lora_dir, allowed_extensions=[".pt", ".ckpt", ".safetensors"]))
+    # ---------------------------
+    import modules.ui_extra_networks as extraNet
+
+    if shared.cmd_opts.multiUser: # Only in multiuser mode, we are skipping the networks that aren't in the common folder / aren't in the user's folder
+        path_user = Path(shared.cmd_opts.lora_dir) / extraNet.pseudo
+        path_common = Path(shared.cmd_opts.lora_dir) / "common"
+        candidates =  list(shared.walk_files(path_user, allowed_extensions=[".pt", ".ckpt", ".safetensors"]))
+        candidates += list(shared.walk_files(path_common, allowed_extensions=[".pt", ".ckpt", ".safetensors"]))
+    else:
+        candidates = list(shared.walk_files(shared.cmd_opts.lora_dir, allowed_extensions=[".pt", ".ckpt", ".safetensors"]))
+
     for filename in candidates:
         if os.path.isdir(filename):
             continue
